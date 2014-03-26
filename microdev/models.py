@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 from django.db import models
 from django.contrib.auth.models import User
 from django.contrib import admin
@@ -114,13 +117,22 @@ class ChangeLoggerMixin():
 		missing = None
 		with transaction.commit_on_success():	# Batches up all the log entry saves
 			for key, orig_value in self._original_state.iteritems():
-				if key not in self._change_logger_mixin__ignore_list and key != '_original_state':
+				if key not in self._change_logger_mixin__ignore_list and key != '_original_state' and '_cache' not in key:
 					new_value = self.__dict__.get(key, missing)
-					if smart_str(orig_value) != smart_str(new_value):
-						# This allows us to get the object's content type to be able to automatically save and store the GenericForeignKey
-						content_type = ContentType.objects.get_for_model(self)
+					if orig_value and new_value:
+						print "model"
+						print ContentType.objects.get_for_model(self)
+						print "key"
+						print key
+						print "orig_value"
+						print orig_value
+						print "new_value"
+						print new_value
+						if smart_str(orig_value) != smart_str(new_value):
+							# This allows us to get the object's content type to be able to automatically save and store the GenericForeignKey
+							content_type = ContentType.objects.get_for_model(self)
 
-						self._change_logger_mixin__change_log_class.objects.log_change(user, self.__class__.__name__, self.id, key, orig_value, new_value, content_type)
+							self._change_logger_mixin__change_log_class.objects.log_change(user, self.__class__.__name__, self.id, key, orig_value, new_value, content_type)
 
 
 
