@@ -120,14 +120,6 @@ class ChangeLoggerMixin():
 				if key not in self._change_logger_mixin__ignore_list and key != '_original_state' and '_cache' not in key:
 					new_value = self.__dict__.get(key, missing)
 					if orig_value and new_value:
-						print "model"
-						print ContentType.objects.get_for_model(self)
-						print "key"
-						print key
-						print "orig_value"
-						print orig_value
-						print "new_value"
-						print new_value
 						if smart_str(orig_value) != smart_str(new_value):
 							# This allows us to get the object's content type to be able to automatically save and store the GenericForeignKey
 							content_type = ContentType.objects.get_for_model(self)
